@@ -99,7 +99,32 @@ class Admin extends Component {
     Dashboard(){
         return(
             <div>
-                DashBoard
+                <div className="container mt-5">
+                    <div className="row">
+                        <form id={'install'} onSubmit={this.submitHandler}>
+                            <Button
+                                className={'m-1'}
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                type="submit"
+                            >
+                                Install DATA
+                            </Button>
+                        </form>
+                        <form id={'delete'} onSubmit={this.submitHandler}>
+                            <Button
+                                className={'m-1'}
+                                variant="outlined"
+                                color="secondary"
+                                size="small"
+                                type="submit"
+                            >
+                                DELETE DATA
+                            </Button>
+                        </form>
+                    </div>
+                </div>
             </div>
         )
     }
