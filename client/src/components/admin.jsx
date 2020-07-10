@@ -21,12 +21,18 @@ class Admin extends Component {
     submitHandler = (e) => {
         e.preventDefault();
 
+        console.log(e.target.id);
+        console.log("Passord => ", this.state.password);
+
         if (e.target.id === "login"){
-            if(this.state.password === "4242@Admin"){
-                this.setState({adminActive : true});
+            console.log("Trying to Login")
+            if(this.state.password.toString() === "4242@Admin"){
+                console.log("Logged in");
+                sessionStorage.setItem('UID_',"hagdgshdsghsgadh");
+                window.location.pathname = '/admin';
+                window.reload();
             }
         }
-
     };
 
     passwordSection() {
@@ -93,7 +99,7 @@ class Admin extends Component {
     Dashboard(){
         return(
             <div>
-
+                DashBoard
             </div>
         )
     }
@@ -101,7 +107,7 @@ class Admin extends Component {
     render() {
         return (
             <div>
-                {this.state.adminActive ? this.Dashboard() : this.Login()}
+                {sessionStorage.getItem('UID_') === "hagdgshdsghsgadh" ? this.Dashboard() : this.Login()}
             </div>
         );
     }
