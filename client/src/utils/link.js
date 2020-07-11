@@ -25,3 +25,5 @@ export const interestsUrl = ServerUrl + "/interests";
 // You can get and delete on these URLs
 export const usersUrl = ServerUrl + "/users";
 export const refreshTokenUrl = ServerUrl + "/users/refresh";
+
+export const installUrl = ServerUrl + "/installation",

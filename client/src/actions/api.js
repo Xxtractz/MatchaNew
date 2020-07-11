@@ -185,13 +185,15 @@ export const getInterests = async (userid) => {
   });
 };
 
+export const getInstall = async () => {
+  return axios.post(`${_Url.installUrl}`).then((response) => {
+    localStorage.setItem('users', JSON.stringify( response.data));
+    console.log(response.data);
+    return response;
+  });
+};
 
-export const loadImage = (image) => {
-  return axios.request(image).then((res) => {
-    console.log(res);
-    return res.request.responseURL;
-  })
-}
+
 
 export const uploadImage = (image) => {
   const unsignedUploadPreset = "odj1pwzn";
