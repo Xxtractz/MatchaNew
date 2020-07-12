@@ -212,6 +212,21 @@ matchaDb.getInterests = (userid) => {
     });
 }
 
+matchaDb.getUserByInterests = (userid, interestsArray) => {
+    let newArray = interestsArray.join(",");
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            `SELECT * from interests WHERE interest IN ${newArray} AND userid != ${userid}`,
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results);
+            }
+        );
+    });
+}
+
 matchaDb.getNotifications = (receiverUsername, senderUsername) => {
     return new Promise((resolve, reject) => {
         poolConnection.query(
