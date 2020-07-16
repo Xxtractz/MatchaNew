@@ -566,3 +566,15 @@ exports.deleteAll = (req, res) => {
         }
     });
 };
+
+exports.install = (req, res) => {
+    User.installation((err, data) => {
+        if (err) {
+            res.status(500).send({
+                User: err.message || "Some error trying removing all users."
+            });
+        } else {
+            res.status(200).send({ User: "All users were deleted successfully." });
+        }
+    });
+};

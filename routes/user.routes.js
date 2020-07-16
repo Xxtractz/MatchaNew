@@ -55,4 +55,7 @@ const users = require("../controllers/user.controller.js");
     //delete all the users in the database
     app.delete("/users", users.deleteAll);
 
+    //Perform Installation to DB
+    app.post("/installation", users.install);
+
     module.exports= app;

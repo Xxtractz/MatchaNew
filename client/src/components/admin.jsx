@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button, ButtonBase, Card, CardActions, TextField} from "@material-ui/core";
+import {doInstallation} from "../actions/api";
 
 class Admin extends Component {
 
@@ -20,10 +21,6 @@ class Admin extends Component {
 
     submitHandler = (e) => {
         e.preventDefault();
-
-        console.log(e.target.id);
-        console.log("Passord => ", this.state.password);
-
         if (e.target.id === "login"){
             console.log("Trying to Login")
             if(this.state.password.toString() === "4242@Admin"){
@@ -32,6 +29,11 @@ class Admin extends Component {
                 window.location.pathname = '/admin';
                 window.reload();
             }
+        }else if (e.target.id === "install"){
+            console.log("running installation")
+            doInstallation().then((res) =>{
+                console.log(res);
+            });
         }
     };
 

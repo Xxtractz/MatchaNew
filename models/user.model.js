@@ -1,4 +1,5 @@
 const sql = require("./db.js");
+const dbSetup = require("./dbSetup.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -380,6 +381,15 @@ User.removeAll = (result) => {
 
     result(null, res);
   });
+};
+
+User.installation = (result) => {
+  let install = dbSetup.pupulate();
+  if (!install) {
+    result({ kind: "installation failed" }, null);
+  } else {
+    result(null, install);
+  }
 };
 
 module.exports = User;

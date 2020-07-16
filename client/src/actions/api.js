@@ -185,7 +185,7 @@ export const getInterests = async (userid) => {
   });
 };
 
-export const getInstall = async () => {
+export const doInstallation = async () => {
   return axios.post(`${_Url.installUrl}`).then((response) => {
     localStorage.setItem('users', JSON.stringify( response.data));
     console.log(response.data);
