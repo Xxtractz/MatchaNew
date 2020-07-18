@@ -1,5 +1,5 @@
-const sql = require("./db.js");
-const dbSetup = require("./dbSetup.js");
+const sql = require("./database/db.js");
+const dbSetup = require("./database/dbSetup.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -385,8 +385,9 @@ User.removeAll = (result) => {
 
 User.installation = async (result) => {
   let createDB = await dbSetup.createDB();
-  let createTables = await dbSetup.createTables()
-  let results = createDB + createTables;
+  let createTables = await dbSetup.createTables();
+  let populate = await  dbSetup.populateDB();
+  let results = createDB + createTables + populate;
   console.log(results);
   // console.log(dbSetup.pupulate());
   // if (!install) {
