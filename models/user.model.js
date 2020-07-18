@@ -383,13 +383,19 @@ User.removeAll = (result) => {
   });
 };
 
-User.installation = (result) => {
-  let install = dbSetup.pupulate();
-  if (!install) {
-    result({ kind: "installation failed" }, null);
-  } else {
-    result(null, install);
+User.installation = async (result) => {
+  let createDB = await dbSetup.createDB();
+  let createTables = await dbSetup.createTables()
+  let results = createDB + createTables;
+  console.log(results);
+  // console.log(dbSetup.pupulate());
+  // if (!install) {
+  //   result({ kind: "installation failed" }, null);
+  // } else {
+  if (results){
+    result(null, "Success");
   }
+  // }
 };
 
 module.exports = User;

@@ -1,157 +1,139 @@
 const mysql = require("mysql");
 const dbConfig = require("../config/db.config");
 
-const poolConnection = mysql.createPool({
-    connectionLimit: 1000,
+const connectionNoDB = mysql.createConnection({
+    host: dbConfig.HOST,
+    user: dbConfig.USER,
+    password: dbConfig.PASSWORD
+});
+
+const connection = mysql.createConnection({
     host: dbConfig.HOST,
     user: dbConfig.USER,
     password: dbConfig.PASSWORD,
     database: dbConfig.DB,
-    port: 3306,
+    multipleStatements: true
 });
 
 let setupDb = {};
 
-setupDb.pupulate = ()=>{
-    const query =
-        `
-create table if not exists notifications
-(
-    notifyid         int(11) unsigned auto_increment
-        primary key,
-    receiverUsername varchar(255) null,
-    senderUsername   varchar(255) null,
-    receiverEmail    varchar(255) null,
-    message          varchar(500) null,
-    seen             tinyint(1)   null
-);
+setupDb.createDB = () => {
+    const query = "CREATE DATABASE IF NOT EXISTS utQlqEWfeo;";
+        return new Promise((resolve, reject) => {
+            connectionNoDB.query(
+                query,
+                '',
+                (err, results) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    console.log(results);
+                    return resolve('Database SuccessFully Created');
+                }
+            );
+        });
+};
 
-create table if not exists users
-(
-    userid           int auto_increment
-        primary key,
-    username         varchar(255)                 not null,
-    email            varchar(255)                 not null,
-    password         varchar(255)                 not null,
-    firstname        varchar(255)                 not null,
-    lastname         varchar(255)                 not null,
-    gender           varchar(255) default 'Other' null,
-    genderPreference varchar(255) default 'Both'  null,
-    bio              longtext                     null,
-    age              int                          null,
-    dob              varchar(255)                 null,
-    token            varchar(500)                 null,
-    status           varchar(255) default '0'     not null,
-    image_1          varchar(255)                 null,
-    image_2          varchar(255)                 null,
-    image_3          varchar(255)                 null,
-    image_4          varchar(255)                 null,
-    active           tinyint(1)   default 0       null,
-    lastseen         varchar(255)                 null,
-    profileImage     varchar(255)                 null,
-    date             varchar(255)                 null,
-    notify           tinyint(1)   default 1       null,
-    longitude        varchar(255)                 null,
-    latitude         varchar(255)                 null,
-    popularity       int          default 1       null,
-    constraint username
-        unique (username),
-    constraint users_email_uindex
-        unique (email)
-)
-    charset = utf8;
+setupDb.createTables = () => {
+    const query = `
 
-create table if not exists auth
-(
-    authid       int(11) unsigned auto_increment
-        primary key,
-    userid       int          not null,
-    username     varchar(255) null,
-    Token        longtext     null,
-    RefreshToken longtext     null,
-    constraint auth_ibfk_1
-        foreign key (userid) references users (userid)
-)
-    charset = utf8;
+CREATE TABLE \`users\` (
+  \`userid\` int NOT NULL AUTO_INCREMENT,
+  \`username\` varchar(255) NOT NULL,
+  \`email\` varchar(255) NOT NULL,
+  \`password\` varchar(255) NOT NULL,
+  \`firstname\` varchar(255) NOT NULL,
+  \`lastname\` varchar(255) NOT NULL,
+  \`gender\` varchar(255) DEFAULT 'Other',
+  \`genderPreference\` varchar(255) DEFAULT 'Both',
+  \`bio\` longtext,
+  \`age\` int DEFAULT NULL,
+  \`dob\` varchar(255) DEFAULT NULL,
+  \`token\` varchar(500) DEFAULT NULL,
+  \`status\` varchar(255) NOT NULL DEFAULT '0',
+  \`image_1\` varchar(255) DEFAULT NULL,
+  \`image_2\` varchar(255) DEFAULT NULL,
+  \`image_3\` varchar(255) DEFAULT NULL,
+  \`image_4\` varchar(255) DEFAULT NULL,
+  \`active\` tinyint(1) DEFAULT '0',
+  \`lastseen\` varchar(255) DEFAULT NULL,
+  \`profileImage\` varchar(255) DEFAULT NULL,
+  \`date\` varchar(255) DEFAULT NULL,
+  \`notify\` tinyint(1) DEFAULT '1',
+  \`longitude\` varchar(255) DEFAULT NULL,
+  \`latitude\` varchar(255) DEFAULT NULL,
+  \`popularity\` int DEFAULT '1',
+  PRIMARY KEY (\`userid\`),
+  UNIQUE KEY \`username\` (\`username\`),
+  UNIQUE KEY \`users_email_uindex\` (\`email\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-create index userid
-    on auth (userid);
+    CREATE TABLE \`auth\` (
+  \`authid\` int unsigned NOT NULL AUTO_INCREMENT,
+  \`userid\` int NOT NULL,
+  \`username\` varchar(255) DEFAULT NULL,
+  \`Token\` longtext,
+  \`RefreshToken\` longtext,
+  PRIMARY KEY (\`authid\`),
+  KEY \`userid\` (\`userid\`),
+  CONSTRAINT \`auth_ibfk_1\` FOREIGN KEY (\`userid\`) REFERENCES \`users\` (\`userid\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-create table if not exists dislikes
-(
-    dislikeid  int(11) unsigned auto_increment
-        primary key,
-    userid     int not null,
-    dislikedid int not null,
-    constraint dislikes_ibfk_1
-        foreign key (userid) references users (userid)
-)
-    charset = utf8;
+CREATE TABLE \`dislikes\` (
+  \`dislikeid\` int unsigned NOT NULL AUTO_INCREMENT,
+  \`userid\` int NOT NULL,
+  \`dislikedid\` int NOT NULL,
+  PRIMARY KEY (\`dislikeid\`),
+  KEY \`userid\` (\`userid\`),
+  CONSTRAINT \`dislikes_ibfk_1\` FOREIGN KEY (\`userid\`) REFERENCES \`users\` (\`userid\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-create index userid
-    on dislikes (userid);
+CREATE TABLE \`interests\` (
+  \`interestid\` int unsigned NOT NULL AUTO_INCREMENT,
+  \`userid\` int NOT NULL,
+  \`interest\` varchar(255) NOT NULL,
+  PRIMARY KEY (\`interestid\`),
+  KEY \`userid\` (\`userid\`),
+  CONSTRAINT \`interests_ibfk_1\` FOREIGN KEY (\`userid\`) REFERENCES \`users\` (\`userid\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-create table if not exists images
-(
-    imageid int(11) unsigned auto_increment
-        primary key,
-    userid  int          not null,
-    image   varchar(255) null,
-    constraint images_ibfk_1
-        foreign key (userid) references users (userid)
-)
-    charset = utf8;
+CREATE TABLE \`notifications\` (
+  \`notifyid\` int unsigned NOT NULL AUTO_INCREMENT,
+  \`receiverUsername\` varchar(255) DEFAULT NULL,
+  \`senderUsername\` varchar(255) DEFAULT NULL,
+  \`receiverEmail\` varchar(255) DEFAULT NULL,
+  \`message\` varchar(500) DEFAULT NULL,
+  \`seen\` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (\`notifyid\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-create index userid
-    on images (userid);
-
-create table if not exists interests
-(
-    interestid int(11) unsigned auto_increment
-        primary key,
-    userid     int          not null,
-    interest   varchar(255) not null,
-    constraint interests_ibfk_1
-        foreign key (userid) references users (userid)
-)
-    charset = utf8;
-
-create index userid
-    on interests (userid);
-
-create table if not exists likes
-(
-    likeid         int(11) unsigned auto_increment
-        primary key,
-    userid         int not null,
-    senderuserid   int null,
-    recieveruserid int null,
-    notify         int null,
-    constraint likes_ibfk_1
-        foreign key (userid) references users (userid)
-)
-    charset = utf8;
-
-create index userid
-    on likes (userid);
+CREATE TABLE \`likes\` (
+  \`likeid\` int unsigned NOT NULL AUTO_INCREMENT,
+  \`userid\` int NOT NULL,
+  \`senderuserid\` int DEFAULT NULL,
+  \`recieveruserid\` int DEFAULT NULL,
+  \`notify\` int DEFAULT NULL,
+  PRIMARY KEY (\`likeid\`),
+  KEY \`userid\` (\`userid\`),
+  CONSTRAINT \`likes_ibfk_1\` FOREIGN KEY (\`userid\`) REFERENCES \`users\` (\`userid\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `;
     return new Promise((resolve, reject) => {
-        poolConnection.query(
+        connection.query(
             query,
             '',
             (err, results) => {
                 if (err) {
                     return reject(err);
                 }
-                return resolve(results[0]);
+                console.log(results);
+                return resolve('Database SuccessFully Created');
             }
         );
     });
-}
+};
 
-
-// {
-// INSERT INTO utQlqEWfeo.users (userid, username, email, password, firstname, lastname, gender, genderPreference, bio, age, dob, token, status, image_1, image_2, image_3, image_4, active, lastseen, profileImage, date, notify, longitude, latitude, popularity) VALUES (14, 'musa', 'musa@mailinator.com', '$2b$10$.Zm6yO33Xm9.nlSoVJl63e38iI8aZej5eI.nwoLwGQZiEiwcyk1KK', 'Musa', 'Baloyi', 'Male', 'Female', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus scelerisque gravida lorem, nec sollicitudin lorem ultrices id. Quisque elementum nunc orci, et gravida mi tincidunt eget. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean vehicula tortor nisi, a tincidunt augue laoreet vel. Donec tristique, ante at consectetur dictum, nisi nisl pulvinar nisl, quis dignissim dolor lectus ut tellus. Etiam ac sollicitudin velit. Curabitur in massa egestas, elementum odio eget, ultrices tortor', 22, '20/01/1998', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11c2EiLCJlbWFpbCI6Im11c2FAbWFpbGluYXRvci5jb20iLCJsYXN0bmFtZSI6IkJhbG95aSIsImZpcnN0bmFtZSI6Ik11c2EiLCJwYXNzd29yZCI6IiQyYiQxMCR6L2xFWGFyNW5yLklsZWRXODJXYmEuVnE2VTZweHZXUVVQamF6VWl2UHFYSXZsOFFrM0VpVyIsImFnZSI6IjIyIiwiZG9iIjoiMjAvMDEvMTk5OCIsImRhdGUiOiI2LzE3LzIwMjAsIDE2OjU0OjEwIiwic3RhdHVzIjoiMCIsImlhdCI6MTU5MjQwNTY1MH0.jHdQLcXsPn3mQbjYJZ11g9i_soEVxNPXizKeP5GXgfQ', '2', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568460/uploads/lzdgxci3vryhe5dgqxi8.jpg', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568471/uploads/sg0r2hhjkuoyujiur1yo.jpg', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568486/uploads/nrgqfjanqpo0pdp5zsie.jpg', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568495/uploads/te94vuwqeb357ixvepuc.jpg', 1, '7/10/2020, 18:21:22', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568451/uploads/qjxpsdjfn3wjypeyalhj.jpg', '6/17/2020, 16:54:10', 1, '-120.05612', '-85.35693', 1);
+// `    INSERT INTO utQlqEWfeo.users (userid, username, email, password, firstname, lastname, gender, genderPreference, bio, age, dob, token, status, image_1, image_2, image_3, image_4, active, lastseen, profileImage, date, notify, longitude, latitude, popularity) VALUES (14, 'musa', 'musa@mailinator.com', '$2b$10$.Zm6yO33Xm9.nlSoVJl63e38iI8aZej5eI.nwoLwGQZiEiwcyk1KK', 'Musa', 'Baloyi', 'Male', 'Female', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus scelerisque gravida lorem, nec sollicitudin lorem ultrices id. Quisque elementum nunc orci, et gravida mi tincidunt eget. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean vehicula tortor nisi, a tincidunt augue laoreet vel. Donec tristique, ante at consectetur dictum, nisi nisl pulvinar nisl, quis dignissim dolor lectus ut tellus. Etiam ac sollicitudin velit. Curabitur in massa egestas, elementum odio eget, ultrices tortor', 22, '20/01/1998', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11c2EiLCJlbWFpbCI6Im11c2FAbWFpbGluYXRvci5jb20iLCJsYXN0bmFtZSI6IkJhbG95aSIsImZpcnN0bmFtZSI6Ik11c2EiLCJwYXNzd29yZCI6IiQyYiQxMCR6L2xFWGFyNW5yLklsZWRXODJXYmEuVnE2VTZweHZXUVVQamF6VWl2UHFYSXZsOFFrM0VpVyIsImFnZSI6IjIyIiwiZG9iIjoiMjAvMDEvMTk5OCIsImRhdGUiOiI2LzE3LzIwMjAsIDE2OjU0OjEwIiwic3RhdHVzIjoiMCIsImlhdCI6MTU5MjQwNTY1MH0.jHdQLcXsPn3mQbjYJZ11g9i_soEVxNPXizKeP5GXgfQ', '2', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568460/uploads/lzdgxci3vryhe5dgqxi8.jpg', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568471/uploads/sg0r2hhjkuoyujiur1yo.jpg', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568486/uploads/nrgqfjanqpo0pdp5zsie.jpg', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568495/uploads/te94vuwqeb357ixvepuc.jpg', 1, '7/10/2020, 18:21:22', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1592568451/uploads/qjxpsdjfn3wjypeyalhj.jpg', '6/17/2020, 16:54:10', 1, '-120.05612', '-85.35693', 1);
 // INSERT INTO utQlqEWfeo.users (userid, username, email, password, firstname, lastname, gender, genderPreference, bio, age, dob, token, status, image_1, image_2, image_3, image_4, active, lastseen, profileImage, date, notify, longitude, latitude, popularity) VALUES (30, 'musa12', 'musa12@mailinator.com', '$2b$10$SBwT/zEu1YpeFtDln32w4usv8Mjz1JqP15fN78mU4.270XfVnhMrW', 'Martin', 'Baloyi', 'Male', 'Female', 'Musa is crazy
 //
 // efficitur suscipit. Aenean ornare auctor enim, vel dignissim nibh molestie pharetra. Sed consequat, est sit amet porttitor posuere, sem tortor vulputate odio, id fermentum augue arcu tincidunt nulla. Donec rutrum ut diam ut feugiat.', 40, '01/02/1980', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11c2ExIiwiZW1haWwiOiJtdXNhMUBtYWlsaW5hdG9yLmNvbSIsImxhc3RuYW1lIjoiQmFsb3lpIiwiZmlyc3RuYW1lIjoiTXVzYSIsInBhc3N3b3JkIjoiJDJiJDEwJGxNUzFrLzF5UUQ4MEhEckxVWm9QYk9lNmVsRDdnQ1BCeGcvVHhtRE8vNWZoaDE3NTVvSHNhIiwiYWdlIjoiNDAiLCJkb2IiOiIwMS8wMi8xOTgwIiwiZGF0ZSI6IjYvMTgvMjAyMCwgMTM6NDk6NDkiLCJzdGF0dXMiOiIwIiwiaWF0IjoxNTkyNDgwOTg5fQ.6QMN2ejxnQFaJ5o4sFC2kCHWfRqeH_l7wtUIDvhdItI', '2', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1593296529/uploads/tdyuwscvflk0wlewonwl.jpg', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1593296958/uploads/wuupgmj43seskv3i2m1c.jpg', '', '', 1, 'online', 'https://res.cloudinary.com/dz1whmlhr/image/upload/v1593293399/uploads/fzvlbsjjaygndmdtdyox.jpg', '6/18/2020, 13:49:49', 1, '-15.76009', '-43.52154', 1);
@@ -1115,5 +1097,8 @@ create index userid
 // INSERT INTO utQlqEWfeo.interests (interestid, userid, interest) VALUES (604, 427, 'Nissan');
 // INSERT INTO utQlqEWfeo.interests (interestid, userid, interest) VALUES (605, 428, 'Daimler');
 // INSERT INTO utQlqEWfeo.interests (interestid, userid, interest) VALUES (606, 429, 'Acura');
-// }
+// `
+
+
+
 module.exports = setupDb;

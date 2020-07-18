@@ -569,6 +569,7 @@ exports.deleteAll = (req, res) => {
 
 exports.install = (req, res) => {
     User.installation((err, data) => {
+        console.log(err);
         if (err) {
             res.status(500).send({
                 User: err.message || "Some error trying removing all users."
