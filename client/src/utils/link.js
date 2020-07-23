@@ -28,3 +28,5 @@ export const usersUrl = ServerUrl + "/users";
 export const refreshTokenUrl = ServerUrl + "/users/refresh";
 
 export const installUrl = ServerUrl + "/installation";
+
+export const uninstallUrl = ServerUrl + "/uninstall";

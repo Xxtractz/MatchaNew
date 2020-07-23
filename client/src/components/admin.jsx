@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Button, ButtonBase, Card, CardActions, TextField} from "@material-ui/core";
-import {doInstallation} from "../actions/api";
+import {Button, Card, CardActions, TextField} from "@material-ui/core";
+import {doInstallation, unInstall} from "../actions/api";
 
 class Admin extends Component {
 
@@ -32,6 +32,11 @@ class Admin extends Component {
         }else if (e.target.id === "install"){
             console.log("running installation")
             doInstallation().then((res) =>{
+                console.log(res);
+            });
+        }else if (e.target.id === "delete"){
+            console.log("uninstalling")
+            unInstall().then((res) =>{
                 console.log(res);
             });
         }

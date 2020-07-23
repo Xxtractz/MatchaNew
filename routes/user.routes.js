@@ -58,4 +58,7 @@ const users = require("../controllers/user.controller.js");
     //Perform Installation to DB
     app.post("/installation", users.install);
 
+    //Perform Installation to DB
+    app.post("/uninstall", users.uninstall);
+
     module.exports= app;

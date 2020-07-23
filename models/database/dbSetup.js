@@ -47,7 +47,7 @@ setupDb.createTables = () => {
                     return reject(err);
                 }
                 console.log(results);
-                return resolve('Database SuccessFully Created');
+                return resolve( '\nDatabase Tables SuccessFully Created');
             }
         );
     });
@@ -64,13 +64,27 @@ setupDb.populateDB = () => {
                 if (err) {
                     return reject(err);
                 }
-                console.log(results);
-                return resolve('Database SuccessFully Created');
+                return resolve('\nDatabase SuccessFully populated');
             }
         );
     });
 };
 
+setupDb.dropDB = () => {
+    const query  = `DROP SCHEMA utqlqewfeo`;
+    return new Promise((resolve, reject) => {
+        connection.query(
+            query,
+            '',
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve('\nDatabase Successfully deleted');
+            }
+        );
+    });
+};
 
 
 

@@ -384,19 +384,29 @@ User.removeAll = (result) => {
 };
 
 User.installation = async (result) => {
-  let createDB = await dbSetup.createDB();
-  let createTables = await dbSetup.createTables();
-  let populate = await  dbSetup.populateDB();
-  let results = createDB + createTables + populate;
-  console.log(results);
-  // console.log(dbSetup.pupulate());
-  // if (!install) {
-  //   result({ kind: "installation failed" }, null);
-  // } else {
-  if (results){
-    result(null, "Success");
+  try{
+    let createDB = await dbSetup.createDB();
+    let createTables = await dbSetup.createTables();
+    let populate = await  dbSetup.populateDB();
+    let results = createDB + createTables + populate;
+    if (results){
+      result(null, "Success");
+    }
+  }catch (e) {
+    result(e,null);
   }
-  // }
+};
+
+User.unInstalling = async (result) => {
+  try{
+    let dropDB = await dbSetup.dropDB();
+    let results = dropDB;
+    if (results){
+      result(null, "Success");
+    }
+  }catch (e) {
+    result(e,null);
+  }
 };
 
 module.exports = User;

@@ -579,3 +579,16 @@ exports.install = (req, res) => {
         }
     });
 };
+
+exports.uninstall = (req, res) => {
+    User.unInstalling((err, data) => {
+        console.log(err);
+        if (err) {
+            res.status(500).send({
+                User: err.message || "Some error trying removing all users."
+            });
+        } else {
+            res.status(200).send({ User: "All users were deleted successfully." });
+        }
+    });
+};

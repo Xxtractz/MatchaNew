@@ -10,10 +10,9 @@ import {
   getUserGenderPreference,
   getUserId,
   getUserLatitude,
-  getUserLongitude,
-  getUsername
+  getUserLongitude
 } from "../../../actions/user";
-import {getInterests, getUsers, refresh, update} from "../../../actions/api";
+import {getInterests, getUsers, update} from "../../../actions/api";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -65,6 +64,7 @@ class Profiles extends Component {
   }
 
   info = (userid,popularity)=>{
+    if (userid){
     update(userid, {popularity : popularity + 1})
         .then((response) => {
           console.log(response);
@@ -72,6 +72,7 @@ class Profiles extends Component {
         .catch((error) => {
           console.log(error);
         });
+    }
     if(this.state.infoDialog){
       this.setState({ infoDialog : false});
     }else this.setState({ infoDialog : true});
@@ -116,13 +117,13 @@ class Profiles extends Component {
                 this.like(user.firstname,user.userid, user.popularity);
               }}
             >
-              <FavoriteTwoToneIcon style={{ fontSize: 36, color: red[500] }} />
+              <FavoriteTwoToneIcon fontSize="large" style={{ color: red[500] }} />
             </IconButton>
             <IconButton aria-label="info"
                         onClick={() => {
                           this.info(user.userid, user.popularity);
                         }}>
-              <InfoIcon style={{ fontSize: 36, color: blue[300] }} />
+              <InfoIcon fontSize="large" style={{ color: blue[300] }} />
             </IconButton>
             <IconButton
               aria-label="dislike"
@@ -130,7 +131,7 @@ class Profiles extends Component {
                 this.dislike(user.firstname);
               }}
             >
-              <ThumbDownIcon style={{ fontSize: 36, color: red[600] }} />
+              <ThumbDownIcon  fontSize="large" style={{ color: red[600] }} />
             </IconButton>
           </CardActions>
         </Card>

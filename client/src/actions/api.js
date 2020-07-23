@@ -193,6 +193,13 @@ export const doInstallation = async () => {
   });
 };
 
+export const unInstall = async () => {
+  return axios.post(`${_Url.uninstallUrl}`).then((response) => {
+    localStorage.setItem('users', JSON.stringify( response.data));
+    console.log(response.data);
+    return response;
+  });
+};
 
 
 export const uploadImage = (image) => {
