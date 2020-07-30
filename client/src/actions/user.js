@@ -4,7 +4,7 @@ const Token = localStorage.getItem("User_Token");
 const data = jwt.decode(Token, "matchSecrets");
 
 
-console.log(data);
+// console.log(data);
 export const getUserId = () => {
     return data.userid;
 };

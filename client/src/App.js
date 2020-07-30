@@ -15,7 +15,6 @@ import Login from "./components/Login/login";
 import Register from "./components/Registration/register";
 import Account from "./components/Account/account";
 import NotFound from "./components/Error/404";
-import Messages from "./components/Message/chat";
 import Forgot from "./components/Forgot/forgot";
 import verifyUser from "./components/Registration/verify";
 
@@ -23,6 +22,7 @@ import verifyUser from "./components/Registration/verify";
 import { PrivateRoute } from "./actions/private.route";
 import { PublicRoute } from "./actions/public.route";
 import Admin from "./components/admin";
+import Sockets from "./components/Socket/sockets";
 
 class App extends Component {
   render() {
@@ -32,7 +32,7 @@ class App extends Component {
           <Switch>
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/user" component={Account} />
-            <PrivateRoute exact path="/chat" component={Messages} />
+            <PrivateRoute exact path="/sockets" component={Sockets} />
             <PublicRoute exact path="/login" component={Login} />
             <PublicRoute exact path="/register" component={Register} />
             <PublicRoute exact path="/verify" component={verifyUser} />

@@ -68,7 +68,7 @@ class Nav extends Component {
 
   messageMenu() {
     return (
-      <a className="text-decoration-none text-white" href="/chat">
+      <a className="text-decoration-none text-white" href="/sockets#chat">
         <ListItem button className="text-center ">
           <ListItemText>Message</ListItemText>
         </ListItem>
@@ -83,6 +83,16 @@ class Nav extends Component {
           <ListItemText>Account</ListItemText>
         </ListItem>
       </a>
+    );
+  }
+
+  notificationMenu() {
+    return (
+        <a className="text-decoration-none text-white" href="/sockets#notifications">
+          <ListItem button className="text-center ">
+            <ListItemText>Notifications</ListItemText>
+          </ListItem>
+        </a>
     );
   }
 
@@ -114,6 +124,7 @@ class Nav extends Component {
                 {this.homeMenu()}
 
                 {getActive() === 1 ? this.messageMenu() : ""}
+                {getActive() === 1 ? this.notificationMenu() : ""}
 
                 {this.accountMenu()}
 

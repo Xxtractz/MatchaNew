@@ -1,6 +1,23 @@
-const Notifications = require('../models/notify.model');
+const Core = require('../models/core.model');
 const commonFunction = require("./commonFunctions");
 const CryptoJS = require('crypto-js');
+
+
+exports.addNotifications = async (req, res) => {
+
+}
+
+exports.getNotifications = async (req, res) => {
+
+}
+
+exports.like = async (req, res) => {
+
+}
+
+exports.dislike = async (req, res) => {
+
+}
 
 exports.create = async (req, res) => {
     const date = new Date(Date.now()).toLocaleString();
@@ -28,7 +45,7 @@ exports.create = async (req, res) => {
     Notifications.create(notify, (err, data) => {
         if (err) {
             console.log(err);
-            res.status(500).send({ 
+            res.status(500).send({
                 Chat: "Some error occurred while saving chat."
             });
         } else {

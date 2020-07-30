@@ -196,80 +196,7 @@ User.findById = async (userid, result) => {
   }
 };
 
-//chenge the user password
-User.changesPassword = (username, password, result) => {
-  // sql.query(
-  //   "UPDATE users SET password = ? WHERE username = ?",
-  //   [password, username],
-  //   (err, res) => {
-  //     if (err) {
-  //       console.log("Error trying to update password: ", err);
-  //       return result(err, null);
-  //     }
-  //     if (res.affectedRows == 0) {
-  //       result({ kind: "not_found" }, null);
-  //       return;
-  //     }
-  //     result(null, { userid: userid, ...res[0] });
-  //   }
-  // );
-};
-
-//check if the email exists before registrations or when updating the email
-User.checksEmail = (email, result) => {
-  sql.query(`SELECT * FROM users WHERE email = ${email}`, (err, res) => {
-    if (err) {
-      console.log("Error in checksEmails: ", err);
-      result(err, null);
-      return;
-    }
-
-    if (res.length) {
-      result(null, res[0]);
-      return;
-    }
-
-    result({ kind: "not_found" }, null);
-  });
-};
-
-//check if a username exists before registration
-User.checksUsername = (username, result) => {
-  sql.query(`SELECT * FROM users WHERE username = ${username}`, (err, res) => {
-    if (err) {
-      console.log("Error in checksUsername: ", err);
-      result(err, null);
-      return;
-    }
-
-    if (res.length) {
-      result(null, res[0]);
-      return;
-    }
-
-    result({ kind: "not_found" }, null);
-  });
-};
-
-//check if the token is valid
-User.checksToken = (username, result) => {
-  sql.query("SELECT * FROM auth WHERE username = ?", username, (err, res) => {
-    if (err) {
-      console.log("Error in checksToken: ", err);
-      result(err, null);
-      return;
-    }
-
-    if (res.length) {
-      result(null, res[0]);
-      return;
-    }
-
-    result({ kind: "not_found" }, null);
-  });
-};
-
-//verifies user after redistration
+//verifies user after registration
 User.verifysReg = async (username, result) => {
   try{
     let statusUpdate = await sql.updateStatus(username,'1');
@@ -281,22 +208,8 @@ User.verifysReg = async (username, result) => {
 };
 
 //get all the users in the database
-User.getAll = (result) => {
-  sql.query("SELECT * FROM users", (err, res) => {
-    if (err) {
-      console.log("Error in get all users: ", err);
-      result(null, err);
-      return;
-    }
-
-    result(null, res);
-  });
-};
-
-//get all the users in the database
 User.getUsers = async (userid,gender,agemin,agemax,result) => {
   let user = await sql.getUsers(userid,gender,agemin,agemax);
-  // console.log(user);
   if (!user) {
     result({ kind: "not_found" }, null);
   } else {
@@ -307,14 +220,12 @@ User.getUsers = async (userid,gender,agemin,agemax,result) => {
 //get all the users in the database
 User.AllInterest = async (userid,result) => {
   let user = await sql.getAllInterests(userid);
-  // console.log(user);
   if (!user) {
     result({ kind: "not_found" }, null);
   } else {
     result(null, user);
   }
 };
-
 
 //used to update the password at forgot password
 User.reset = async (username, password, result) => {
@@ -370,19 +281,6 @@ User.updateInterest = async (userid, interests, result) => {
   }
 };
 
-//remove all the users in the database
-User.removeAll = (result) => {
-  sql.query("DELETE FROM users", (err, res) => {
-    if (err) {
-      console.log("Error trying to delete all users: ", err);
-      result(null, err);
-      return;
-    }
-
-    result(null, res);
-  });
-};
-
 User.installation = async (result) => {
   try{
     let createDB = await dbSetup.createDB();
@@ -399,8 +297,7 @@ User.installation = async (result) => {
 
 User.unInstalling = async (result) => {
   try{
-    let dropDB = await dbSetup.dropDB();
-    let results = dropDB;
+    let results = await dbSetup.dropDB();
     if (results){
       result(null, "Success");
     }

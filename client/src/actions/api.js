@@ -162,6 +162,40 @@ export const update = async (id, body) => {
     });
 };
 
+export const likeAndDislike = async (id, body) => {
+  return axios
+      .post(_Url.updateUserById + "/" + id, body)
+      .then((response) => {
+        if (response) {
+          return response;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          return error.response;
+        } else {
+          return "Timeout";
+        }
+      });
+};
+
+export const notification = async (id, body) => {
+  return axios
+      .post(_Url.updateUserById + "/" + id, body)
+      .then((response) => {
+        if (response) {
+          return response;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          return error.response;
+        } else {
+          return "Timeout";
+        }
+      });
+};
+
 export const userData = async (id) => {
   return axios.get(`${_Url.usersUrl}/${id}`).then((response) => {
     handleStoreUser(JSON.stringify(response.data.User));

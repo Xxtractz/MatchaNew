@@ -1,3 +1,4 @@
+// const ServerUrl = "http://192.168.8.104:4000";
 const ServerUrl = "http://localhost:4000";
 
 /**
@@ -15,18 +16,18 @@ export const ReverifyUrl = ServerUrl + "/users/verifyAgain";
 export const forgotPasswordUrl = ServerUrl + "/users/reset";
 export const UpdateUrl = ServerUrl + "/update";
 
-// update a user by their id _PUT Method
+// User Related Urls
 export const updateUserById = ServerUrl + "/users/update";
-
-export const deleteUserById = ServerUrl + "/users";
-
-// You can get and delete on these URLs
 export const interestsUrl = ServerUrl + "/interests";
-
-// You can get and delete on these URLs
 export const usersUrl = ServerUrl + "/users";
 export const refreshTokenUrl = ServerUrl + "/users/refresh";
 
-export const installUrl = ServerUrl + "/installation";
+// Notifications and Likes
+export const notificationUrl = ServerUrl + "/notifications";
+export const like = ServerUrl + "/users/likes";
+export const like = ServerUrl + "/users/likes";
 
+
+// Installation
+export const installUrl = ServerUrl + "/installation";
 export const uninstallUrl = ServerUrl + "/uninstall";

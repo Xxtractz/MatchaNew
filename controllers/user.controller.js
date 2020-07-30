@@ -1,5 +1,3 @@
-
-
 const User = require("../models/user.model.js");
 const commonFunction = require("./commonFunctions");
 const boom = require("@hapi/boom");

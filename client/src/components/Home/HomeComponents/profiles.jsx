@@ -12,7 +12,7 @@ import {
   getUserLatitude,
   getUserLongitude
 } from "../../../actions/user";
-import {getInterests, getUsers, update} from "../../../actions/api";
+import {getInterests, getUsers, likeAndDislike, notification, update} from "../../../actions/api";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -58,34 +58,38 @@ class Profiles extends Component {
         this.state.ageMax
     ).then((res)=>{
       const origin = { longitude: getUserLongitude(), latitude: getUserLatitude()}
-      // console.log(sortByDistance(origin,res.data, opts))
       this.setState({ cards : [...sortByDistance(origin,res.data, opts)]});
     });
   }
 
-  info = (userid,popularity)=>{
+  info = async (userid,popularity)=>{
     if (userid){
-    update(userid, {popularity : popularity + 1})
+    await update(userid, {popularity : popularity + 1})
         .then((response) => {
           console.log(response);
         })
         .catch((error) => {
           console.log(error);
         });
+      // await likeAndDislike();
+      // await notification(userid);
     }
+
     if(this.state.infoDialog){
       this.setState({ infoDialog : false});
     }else this.setState({ infoDialog : true});
   }
 
-  like = (user,userid,popularity) => {
-    update(userid, {popularity : popularity + 3})
+  like = async (user,userid,popularity) => {
+    await update(userid, {popularity : popularity + 3})
         .then((response) => {
           console.log(response);
         })
         .catch((error) => {
           console.log(error);
         });
+    // await likeAndDislike();
+    // await notification();
       console.log(user + " Was Liked");
       this.remove();
   };
@@ -114,14 +118,14 @@ class Profiles extends Component {
             <IconButton
               aria-label="Like"
               onClick={() => {
-                this.like(user.firstname,user.userid, user.popularity);
+                this.like(user.firstname,user.userid, user.popularity).then();
               }}
             >
               <FavoriteTwoToneIcon fontSize="large" style={{ color: red[500] }} />
             </IconButton>
             <IconButton aria-label="info"
                         onClick={() => {
-                          this.info(user.userid, user.popularity);
+                          this.info(user.userid, user.popularity).then();
                         }}>
               <InfoIcon fontSize="large" style={{ color: blue[300] }} />
             </IconButton>
@@ -213,7 +217,7 @@ class Profiles extends Component {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => {
-                this.info();
+                this.info().then();
               }} color="primary">
                 Close
               </Button>
