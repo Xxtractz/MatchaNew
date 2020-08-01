@@ -18,12 +18,13 @@ let matchaDb = {};
 * ALl User Select Queries
 * */
 
-matchaDb.findById = (table, id) => {
+matchaDb.findById = async (id) => {
     return new Promise((resolve, reject) => {
         poolConnection.query(
-            `SELECT * from ${table} WHERE userid = ?`,
+            `SELECT * from users WHERE userid = ?`,
             [id],
             (err, results) => {
+                console.log(results)
                 if (err) {
                     return reject(err);
                 }
@@ -227,20 +228,6 @@ matchaDb.getUserByInterests = (userid, interestsArray) => {
     });
 }
 
-matchaDb.getNotifications = (receiverUsername, senderUsername) => {
-    return new Promise((resolve, reject) => {
-        poolConnection.query(
-            `SELECT * from notifications  WHERE (receiverUsername = ? AND senderUsername = ?) || (receiverUsername = ? AND senderUsername = ?)`,
-            [receiverUsername, senderUsername, senderUsername, receiverUsername],
-            (err, results) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve(results);
-            }
-        );
-    });
-}
 
 matchaDb.removeInterests = (userid,interestsToDelete = []) => {
     return new Promise((resolve, reject) => {
@@ -352,6 +339,56 @@ matchaDb.getUsers = (userid,gender,agemin,agemax) => {
         );
     });
 }
+
+matchaDb.seen = (username) => {
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            "UPDATE notifications SET seen = 1 WHERE receiver = ?",
+            [username],
+            (err, results) => {
+                console.log(results);
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+};
+
+matchaDb.getNotifications = (username) => {
+    console.log(username);
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            "SELECT * FROM notifications WHERE receiver = ? ORDER BY created_at DESC ",
+            [username],
+            (err, results) => {
+                console.log(results);
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results);
+            }
+        );
+    });
+};
+
+matchaDb.getNewNotifications = (username) => {
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            "SELECT COUNT(seen) FROM notifications WHERE (receiver = ? AND seen = 0)",
+            [username],
+            (err, results) => {
+                console.log(results);
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+};
+
 
 module.exports = matchaDb;
 

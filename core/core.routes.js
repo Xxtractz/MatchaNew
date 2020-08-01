@@ -3,6 +3,7 @@ const Core = require("../controllers/core.controller");
 
     // Notifications
     app.post("/notifications", Core.addNotifications);
+    app.get("/notifications/:username", Core.getNotificationsCount);
     app.get("/notifications", Core.getNotifications);
 
     //getting chats for two users

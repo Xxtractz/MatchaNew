@@ -50,16 +50,17 @@ app.use(function(req, res, next) {
     //exclude other routes
     // console.log(req);
     if (
-
+        (req.method === "POST") ||
+        (req.method === "GET" )||
         (req.method === "POST" && req.url === "/logout") ||
         (req.method === "POST" && req.url === "/users/register") ||
         (req.method === "POST" && req.url === "/verifyAgain") ||
         (req.method === "GET" && req.url === "/socket.io/socket.io.js")
     ) {
-        console.log(req.url);
+        console.log("next before =>",req.url);
         next();
     } else {
-        console.log(req.url);
+        console.log("next failed =>",req.url);
         // Website you wish to allow to connect
         res.setHeader("Access-Control-Allow-Origin", "*");
 

@@ -179,11 +179,46 @@ export const likeAndDislike = async (id, body) => {
       });
 };
 
-export const notification = async (id, body) => {
+export const notification = async (body) => {
   return axios
-      .post(_Url.updateUserById + "/" + id, body)
+      .post(_Url.notificationUrl , body)
       .then((response) => {
         if (response) {
+          return response;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          return error.response;
+        } else {
+          return "Timeout";
+        }
+      });
+};
+
+export const getNotification = async (username) => {
+  return axios
+      .get(_Url.notificationUrl +'?username='+ username)
+      .then((response) => {
+        if (response) {
+          return response;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          return error.response;
+        } else {
+          return "Timeout";
+        }
+      });
+};
+
+export const getNotificationCount = async (username) => {
+  return axios
+      .get(_Url.notificationUrl+'/'+username)
+      .then((response) => {
+        if (response) {
+          console.log(response);
           return response;
         }
       })
@@ -203,10 +238,15 @@ export const userData = async (id) => {
   });
 };
 
+export const getUser = async (id) => {
+  return axios.get(`${_Url.usersUrl}/${id}`).then((response) => {
+    return response;
+  });
+};
+
 export const getUsers = async (userid,gender,minAge, maxAge) => {
   return axios.post(`${_Url.usersUrl}/${userid}`,{userid:userid,gender:gender,minAge:minAge,maxAge:maxAge}).then((response) => {
     localStorage.setItem('users', JSON.stringify( response.data));
-    console.log(response.data);
     return response;
   });
 };

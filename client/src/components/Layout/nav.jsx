@@ -7,6 +7,7 @@ import {
   getUsername,
   getProfilePicture, getActive,
 } from "../../actions/user";
+import Badge from '@material-ui/core/Badge';
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import {
   Card,
@@ -88,10 +89,18 @@ class Nav extends Component {
 
   notificationMenu() {
     return (
-        <a className="text-decoration-none text-white" href="/sockets#notifications">
+        <a className="text-decoration-none text-white mx-auto" href="/sockets#notifications">
+
           <ListItem button className="text-center ">
-            <ListItemText>Notifications</ListItemText>
+
+              <ListItemText>
+                <Badge className="text-center " badgeContent={0} color="secondary">
+                  Notifications
+                </Badge>
+              </ListItemText>
+
           </ListItem>
+
         </a>
     );
   }

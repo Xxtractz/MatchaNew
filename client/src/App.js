@@ -23,6 +23,7 @@ import { PrivateRoute } from "./actions/private.route";
 import { PublicRoute } from "./actions/public.route";
 import Admin from "./components/admin";
 import Sockets from "./components/Socket/sockets";
+import ViewUser from "./components/Account/viewuser";
 
 class App extends Component {
   render() {
@@ -32,6 +33,7 @@ class App extends Component {
           <Switch>
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/user" component={Account} />
+            <PrivateRoute exact path="/user/view" component={ViewUser} />
             <PrivateRoute exact path="/sockets" component={Sockets} />
             <PublicRoute exact path="/login" component={Login} />
             <PublicRoute exact path="/register" component={Register} />

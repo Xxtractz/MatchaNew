@@ -24,8 +24,8 @@ export const refreshTokenUrl = ServerUrl + "/users/refresh";
 
 // Notifications and Likes
 export const notificationUrl = ServerUrl + "/notifications";
-export const like = ServerUrl + "/users/likes";
-export const like = ServerUrl + "/users/likes";
+// export const like = ServerUrl + "/users/likes";
+// export const like = ServerUrl + "/users/likes";
 
 
 // Installation

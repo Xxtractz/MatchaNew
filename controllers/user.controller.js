@@ -282,6 +282,10 @@ exports.findOne = (req, res) => {
                 date: user.date,
                 age: user.age,
                 dob: user.dob,
+                image_1: user.image_1,
+                image_2: user.image_2,
+                image_3: user.image_3,
+                image_4: user.image_4,
                 interests: user.interests,
                 likes: user.likes,
                 dislikes: user.dislikes,
@@ -396,8 +400,6 @@ exports.verifyReg = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    console.log("UpdateUrl");
-    // console.log(req);
     if (!req.body) {
         res.status(400).send({
             User: "Content can not be empty."

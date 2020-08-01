@@ -10,7 +10,7 @@ import {
   getUserGenderPreference,
   getUserId,
   getUserLatitude,
-  getUserLongitude
+  getUserLongitude, getUsername
 } from "../../../actions/user";
 import {getInterests, getUsers, likeAndDislike, notification, update} from "../../../actions/api";
 import Dialog from '@material-ui/core/Dialog';
@@ -62,9 +62,9 @@ class Profiles extends Component {
     });
   }
 
-  info = async (userid,popularity)=>{
+  info = (userid,popularity,username)=>{
     if (userid){
-    await update(userid, {popularity : popularity + 1})
+    update(userid, {popularity : popularity + 1})
         .then((response) => {
           console.log(response);
         })
@@ -72,7 +72,7 @@ class Profiles extends Component {
           console.log(error);
         });
       // await likeAndDislike();
-      // await notification(userid);
+      notification({sender:getUsername(),receiver: username, message: "has viewed your profile."});
     }
 
     if(this.state.infoDialog){
@@ -80,22 +80,21 @@ class Profiles extends Component {
     }else this.setState({ infoDialog : true});
   }
 
-  like = async (user,userid,popularity) => {
-    await update(userid, {popularity : popularity + 3})
+  like = (username,userid,popularity) => {
+    update(userid, {popularity : popularity + 3})
         .then((response) => {
-          console.log(response);
+          // console.log(response);
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
+    notification({sender:getUsername(),receiver: username, message: " Likes you."});
     // await likeAndDislike();
-    // await notification();
-      console.log(user + " Was Liked");
       this.remove();
   };
 
-  dislike = (user) => {
-    console.log(user + " Was disLiked");
+  dislike = (username) => {
+    notification({sender:getUsername(),receiver: username, message: " dislikes you."});
     this.remove();
   };
 
@@ -118,21 +117,21 @@ class Profiles extends Component {
             <IconButton
               aria-label="Like"
               onClick={() => {
-                this.like(user.firstname,user.userid, user.popularity).then();
+                this.like(user.username,user.userid, user.popularity);
               }}
             >
               <FavoriteTwoToneIcon fontSize="large" style={{ color: red[500] }} />
             </IconButton>
             <IconButton aria-label="info"
                         onClick={() => {
-                          this.info(user.userid, user.popularity).then();
+                          this.info(user.userid, user.popularity,user.username);
                         }}>
               <InfoIcon fontSize="large" style={{ color: blue[300] }} />
             </IconButton>
             <IconButton
               aria-label="dislike"
               onClick={() => {
-                this.dislike(user.firstname);
+                this.dislike(user.username);
               }}
             >
               <ThumbDownIcon  fontSize="large" style={{ color: red[600] }} />
@@ -217,7 +216,7 @@ class Profiles extends Component {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => {
-                this.info().then();
+                this.info();
               }} color="primary">
                 Close
               </Button>

@@ -306,4 +306,6 @@ User.unInstalling = async (result) => {
   }
 };
 
+// User.getMatchedUsers = async (res)
+
 module.exports = User;

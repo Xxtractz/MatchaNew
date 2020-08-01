@@ -4,10 +4,75 @@ const CryptoJS = require('crypto-js');
 
 
 exports.addNotifications = async (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            User: "Content can not be empty."
+        });
+    }
+        const notifications = {
+            receiver: req.body.receiver,
+            sender: req.body.sender,
+            message: req.body.message
+        }
+
+        await Core.createNotification(notifications, (err, data) => {
+            console.log("Update \n\n Interests ==> err", err);
+            console.log("\n\n\nUpdate \n\n Interests ==> data", data);
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        User: `Not found user with id ${req.params.userid}.`
+                    });
+                } else {
+                    res.status(500).send({
+                        User: "Error updating user with ID " + req.params.userid
+                    });
+                }
+            }
+            res.status(200).send({Notify: data});
+        });
 
 }
 
-exports.getNotifications = async (req, res) => {
+exports.getNotificationsCount =  async (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            User: "Content can not be empty."
+        });
+    }
+
+    await Core.getNotificationsCount(req.body.username, (err, data) => {
+        console.log("Update \n\n Interests ==> err", err);
+        console.log("\n\n\nUpdate \n\n Interests ==> data", data);
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    User: `Not found user with id ${req.params.userid}.`
+                });
+            } else {
+                res.status(500).send({
+                    User: "Error updating user with ID " + req.params.userid
+                });
+            }
+        }
+        res.status(200).send({Notify: data});
+    });
+
+}
+
+exports.getNotifications = async  (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            User: "Content can not be empty."
+        });
+    }
+    await Core.getNotifications(req.query.username, (err, data) => {
+        console.log("Data from Notification  ==> ",data );
+        if (err) {
+            res.status(404).send({notification:"Error updating user with Username "});
+        }
+        res.status(200).send(data);
+    });
 
 }
 
@@ -18,71 +83,3 @@ exports.like = async (req, res) => {
 exports.dislike = async (req, res) => {
 
 }
-
-exports.create = async (req, res) => {
-    const date = new Date(Date.now()).toLocaleString();
-
-    const bytes  = CryptoJS.AES.decrypt(req.body.chat, 'StopShhh');
-    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-    if (!decryptedData.receiverUsername &&
-        !decryptedData.senderUsername &&
-        !decryptedData.receiverEmail &&
-        !decryptedData.message) {
-        res.status(400).send({
-            Chat: "Content can not be empty"
-        });
-    }
-
-
-    const notify = new Notifications({
-        receiverUsername: decryptedData.receiverUsername,
-        senderUsername: decryptedData.senderUsername,
-        receiverEmail: decryptedData.receiverEmail,
-        message: decryptedData.message,
-        seen: false,
-    });
-
-    Notifications.create(notify, (err, data) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send({
-                Chat: "Some error occurred while saving chat."
-            });
-        } else {
-            commonFunction.sendEmail(
-                decryptedData.email,
-                "You got a notification",
-                '<p> Login to see the message you getting hits.</p>'
-            );
-            console.log(data);
-            res.status(200).send({Notify: data});
-        }
-    });
-
-};
-
-exports.getNotifications = async (req, res) => {
-    const bytes  = CryptoJS.AES.decrypt(req.body.chat, 'StopShhh');
-    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-    if (!decryptedData.receiverUsername &&
-        !decryptedData.senderUsername) {
-        res.status(400).send({
-            Notify: "Content can not be empty"
-        });
-    }
-    Notifications.getNotifications(decryptedData.receiverUsername, decryptedData.senderUsername, (err, data) => {
-        if (err) {
-            if (err.kind === "not_found") {
-                res.status(404).send({
-                    User: `Not found notifications with usernames ${decryptedData.receiverUsername} and ${decryptedData.senderUsername}.`
-                });
-            } else {
-                res.status(500).send({
-                    User: `Error getting notifications with usernames ${decryptedData.receiverUsername} and ${decryptedData.senderUsername}.`
-                });
-            }
-        } else {
-            res.status(200).send({ Notifications: data });
-        }
-    });
-};
