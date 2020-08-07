@@ -12,13 +12,12 @@ import {
   getUserLatitude,
   getUserLongitude, getUsername
 } from "../../../actions/user";
-import {getInterests, getUsers, likeAndDislike, notification, update} from "../../../actions/api";
+import {getInterests, getMyLikes, getUsers, likeAndDislike, notification, update} from "../../../actions/api";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import * as geolib from 'geolib';
 import sortByDistance from 'sort-by-distance';
 import Slider from "@material-ui/core/Slider";
 
@@ -28,6 +27,7 @@ class Profiles extends Component {
     this.state = {
       interests: [],
       cards: [],
+      likes: [],
       infoDialog:false,
       ageMin: 18,
       ageMax: 70,
@@ -36,13 +36,23 @@ class Profiles extends Component {
   }
 
   componentDidMount() {
+    this.getLikesState();
     this.getCardState();
     this.getInterestsState();
   }
 
+  //Set State On Mount
   getInterestsState(){
     getInterests(getUserId()).then((res)=>{
-      this.setState({ interests : [...res.data]});
+      if (res) {
+        this.setState({interests: [...res.data]});
+      }});
+  }
+
+  getLikesState(){
+    getMyLikes(getUserId()).then((res)=>{
+      if(res)
+      {this.setState({ likes : [...res.data]});}
     });
   }
 
@@ -57,11 +67,14 @@ class Profiles extends Component {
         this.state.ageMin,
         this.state.ageMax
     ).then((res)=>{
-      const origin = { longitude: getUserLongitude(), latitude: getUserLatitude()}
-      this.setState({ cards : [...sortByDistance(origin,res.data, opts)]});
-    });
+      if (res) {
+        const filteredData = res.data.filter(res => !this.state.likes.includes(res.userid));
+        const origin = {longitude: getUserLongitude(), latitude: getUserLatitude()}
+        this.setState({cards: [...sortByDistance(origin, filteredData, opts)]});
+      }});
   }
 
+  // Like/Info/Dislike Button Functionality
   info = (userid,popularity,username)=>{
     if (userid){
     update(userid, {popularity : popularity + 1})
@@ -71,7 +84,6 @@ class Profiles extends Component {
         .catch((error) => {
           console.log(error);
         });
-      // await likeAndDislike();
       notification({sender:getUsername(),receiver: username, message: "has viewed your profile."});
     }
 
@@ -88,13 +100,17 @@ class Profiles extends Component {
         .catch((error) => {
           // console.log(error);
         });
-    notification({sender:getUsername(),receiver: username, message: " Likes you."});
-    // await likeAndDislike();
+    notification({sender:getUsername(),receiver: username, message: " Likes you."}).then();
+    likeAndDislike({
+      type: "like",
+      sender: getUserId(),
+          receiver: userid,
+    }).then();
       this.remove();
   };
 
   dislike = (username) => {
-    notification({sender:getUsername(),receiver: username, message: " dislikes you."});
+    notification({sender:getUsername(),receiver: username, message: " dislikes you."}).then();
     this.remove();
   };
 
@@ -103,6 +119,7 @@ class Profiles extends Component {
   };
 
   display(user) {
+    console.log(this.state.cards);
     return (
       <div>
         <Card variant="outlined" style={{ height: "620px", width: "320px" }}>
@@ -141,10 +158,21 @@ class Profiles extends Component {
     );
   }
 
-  handleResponse(type) {
-    console.log(type);
-  }
+  // handle onChange
+  handleSearch = () => {
+    this.setState({cards : []});
+    this.getCardState();
+  };
 
+  handleChangeAge = (event, newValue) => {
+    this.setState({ ageMin: newValue[0], ageMax: newValue[1] });
+  };
+
+  handleChangeLocation = (event, number) => {
+    this.setState({ locationDistance: number });
+  };
+
+  //Views
   displayEmpty() {
     return <div>There are no profile to display</div>;
   }
@@ -224,27 +252,6 @@ class Profiles extends Component {
         </div>
     )
   }
-
-  handleSearch = () => {
-    this.setState({cards : []});
-    this.getCardState();
-  };
-
-  handleChangeAge = (event, newValue) => {
-    this.setState({ ageMin: newValue[0], ageMax: newValue[1] });
-  };
-
-  handleChangeGender = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  handleChangeLocation = (event, number) => {
-    this.setState({ locationDistance: number });
-  };
-
-  valuetext = (value) => {
-    return value;
-  };
 
   locationSection = () => {
     const marks = [
@@ -359,6 +366,10 @@ class Profiles extends Component {
         </div>
     )
   }
+
+  valuetext = (value) => {
+    return value;
+  };
 
   render() {
     return (

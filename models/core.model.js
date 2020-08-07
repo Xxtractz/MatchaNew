@@ -9,11 +9,17 @@ Core.visit = () =>{
   }
 }
 
-Core.like = ( )=>{
-  try {
+Core.getMyLike = async (id,result)=>{
+  try{
+    const myLikes = await sql.getMyLikes(id);
+    console.log("Mylikes -====>",myLikes)
+      result(null, myLikes);
 
   }catch (e) {
-
+    if(e.code ==='ER_DUP_ENTRY'){
+      let message = e.message.match(/(\x27).+(\x27) /gm);
+      result(message[0],null);
+    }
   }
 }
 
@@ -56,7 +62,7 @@ Core.getNotifications = async (username, result) =>{
 
 Core.addLikes = async (likeMessage, result) =>{
   try{
-    let liked = await sql.insert('likes',likeMessage);
+    let liked = await sql.like(likeMessage);
     console.log(liked);
     result(null, liked);
   }catch (e) {

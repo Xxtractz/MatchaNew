@@ -22,11 +22,11 @@ export const interestsUrl = ServerUrl + "/interests";
 export const usersUrl = ServerUrl + "/users";
 export const refreshTokenUrl = ServerUrl + "/users/refresh";
 
-// Notifications and Likes
+// Notifications
 export const notificationUrl = ServerUrl + "/notifications";
-// export const like = ServerUrl + "/users/likes";
-// export const like = ServerUrl + "/users/likes";
 
+//Likes
+export const like = ServerUrl + "/likes";
 
 // Installation
 export const installUrl = ServerUrl + "/installation";

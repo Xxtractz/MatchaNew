@@ -382,11 +382,11 @@ matchaDb.getNewNotifications = (username) => {
 
 // Handle Like and Dislike
 
-matchaDb.updateLike = (like) => {
+matchaDb.like = (like) => {
     return new Promise((resolve, reject) => {
         poolConnection.query(
-            "UPDATE likes SET status = ? WHERE username = ?",
-            [status, username],
+            `INSERT INTO likes SET ?`,
+            [like],
             (err, results) => {
                 if (err) {
                     return reject(err);
@@ -397,11 +397,11 @@ matchaDb.updateLike = (like) => {
     });
 }
 
-matchaDb.updateDislike = () => {
+matchaDb.disLike = (user_sender) =>{
     return new Promise((resolve, reject) => {
         poolConnection.query(
-            "UPDATE users SET status = ? WHERE username = ?",
-            [status, username],
+            "DELETE '*' FROM likes WHERE sender = ?",
+            [user_sender],
             (err, results) => {
                 if (err) {
                     return reject(err);
@@ -412,11 +412,15 @@ matchaDb.updateDislike = () => {
     });
 }
 
-matchaDb.getLike = () => {
+matchaDb.getMatch = (userSender,UserReceiver) =>{
+    const query = `
+            SELECT sender, receiver 
+            FROM likes 
+            WHERE reciever LIKE ?
+            AND sender LIKE ?`;
     return new Promise((resolve, reject) => {
-        poolConnection.query(
-            "UPDATE users SET status = ? WHERE username = ?",
-            [status, username],
+        poolConnection.query(query,
+            [userSender,UserReceiver],
             (err, results) => {
                 if (err) {
                     return reject(err);
@@ -427,21 +431,25 @@ matchaDb.getLike = () => {
     });
 }
 
-matchaDb.getDislike = () => {
+matchaDb.getMyLikes = (user_sender) =>{
+    const query = `
+            SELECT receiver
+            FROM likes 
+            WHERE sender = ?`;
     return new Promise((resolve, reject) => {
-        poolConnection.query(
-            "UPDATE users SET status = ? WHERE username = ?",
-            [status, username],
+        poolConnection.query(query,
+            [user_sender],
             (err, results) => {
+
                 if (err) {
                     return reject(err);
                 }
-                return resolve(results[0]);
+                return resolve(results.map(result => {
+                    return result.receiver
+                }));
             }
         );
     });
 }
-
 
 module.exports = matchaDb;
-

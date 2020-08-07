@@ -20,10 +20,10 @@ const notifyRoutes = require('./core/core.routes');
 
 //SocketIO
 let io = module.exports.io = require('socket.io')(server);
-const SocketManager = require('./core/SocketManager');
+// const SocketManager = require('./core/SocketManager');
 
 //Connect to Socket
-io.sockets.on("connection", SocketManager);
+// io.sockets.on("connection", SocketManager);
 
 // Bodyparser middleware
 app.use(

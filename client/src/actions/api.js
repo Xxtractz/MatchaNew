@@ -21,6 +21,7 @@ function hardLogout() {
 //   return localStorage.getItem("User_Token");
 // };
 
+//User Details
 export const register = async (userData) => {
   const encryptedData = CryptoJS.AES.encrypt(
     JSON.stringify(userData),
@@ -162,9 +163,10 @@ export const update = async (id, body) => {
     });
 };
 
-export const likeAndDislike = async (id, body) => {
+// Like
+export const likeAndDislike = async (body) => {
   return axios
-      .post(_Url.updateUserById + "/" + id, body)
+      .post(_Url.like , body)
       .then((response) => {
         if (response) {
           return response;
@@ -179,6 +181,25 @@ export const likeAndDislike = async (id, body) => {
       });
 };
 
+export const getMyLikes = (id) => {
+  return axios
+      .get(_Url.like + "/" + id)
+      .then((response) => {
+        if (response) {
+          return response;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          return error.response;
+        } else {
+          return "Timeout";
+        }
+      });
+};
+
+
+// Notifications
 export const notification = async (body) => {
   return axios
       .post(_Url.notificationUrl , body)
@@ -231,6 +252,7 @@ export const getNotificationCount = async (username) => {
       });
 };
 
+// User Profiles
 export const userData = async (id) => {
   return axios.get(`${_Url.usersUrl}/${id}`).then((response) => {
     handleStoreUser(JSON.stringify(response.data.User));
@@ -251,10 +273,10 @@ export const getUsers = async (userid,gender,minAge, maxAge) => {
   });
 };
 
+// Setup
 export const getInterests = async (userid) => {
   return axios.post(`${_Url.interestsUrl}/${userid}`,{userid:userid}).then((response) => {
     localStorage.setItem('interests', JSON.stringify( response.data));
-    console.log(response.data);
     return response;
   });
 };
@@ -275,7 +297,9 @@ export const unInstall = async () => {
   });
 };
 
+// Likes
 
+//Images
 export const uploadImage = (image) => {
   const unsignedUploadPreset = "odj1pwzn";
   const cloudName = "dz1whmlhr";

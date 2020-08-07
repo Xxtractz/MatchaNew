@@ -1,7 +1,4 @@
 const Core = require('../models/core.model');
-const commonFunction = require("./commonFunctions");
-const CryptoJS = require('crypto-js');
-
 
 exports.addNotifications = async (req, res) => {
     if (!req.body) {
@@ -77,18 +74,19 @@ exports.getNotifications = async  (req, res) => {
 }
 
 exports.like = async (req, res) => {
+    console.log(req.body);
     if (!req.body) {
         res.status(400).send({
             User: "Content can not be empty."
         });
     }
     if (req.body.type === "like"){
+        console.log("like ===> ")
         const likeMessage = {
             sender: req.body.sender,
             receiver: req.body.receiver,
-            liked: 1
         }
-        await Core.addLikes(likeMessage, (err, res) => {
+        await Core.addLikes(likeMessage, (err, data) => {
             if (err) {
                 res.status(404).send({like: "Error adding like "});
             }
@@ -96,18 +94,37 @@ exports.like = async (req, res) => {
         });
 
     }else if(req.body.type === "dislike"){
+
+        console.log("dislike ===>")
         const dislikeMessage = {
             sender: req.body.sender,
             receiver: req.body.receiver,
-            liked: 0
         }
-        await Core.addLikes(dislikeMessage, (err, res) => {
+        await Core.addLikes(dislikeMessage, (err, data) => {
             if (err) {
                 res.status(404).send({like: "Error adding dislike "});
             }
             res.status(200).send(data);
         });
-    //    un-match if matched
+    }
+}
+
+exports.getMyLike = async (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            User: "Content can not be empty."
+        });
+    }
+    if (req.params.id){
+        await Core.getMyLike(req.params.id, (err, data) => {
+            console.log("get My Like Response  ======>",err)
+            console.log("get My Like Response  ======>",data)
+            if (err) {
+                res.status(404).send({like: "Error adding like "});
+            }
+            res.status(200).send(data);
+        });
+
     }
 }
 
