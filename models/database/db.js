@@ -197,7 +197,6 @@ matchaDb.removeSession = (username) => {
 * Interests  Start Here
 */
 
-
 matchaDb.getInterests = (userid) => {
     return new Promise((resolve, reject) => {
         poolConnection.query(
@@ -228,7 +227,6 @@ matchaDb.getUserByInterests = (userid, interestsArray) => {
     });
 }
 
-
 matchaDb.removeInterests = (userid,interestsToDelete = []) => {
     return new Promise((resolve, reject) => {
         console.log('interestsToDelete => ', interestsToDelete)
@@ -246,7 +244,6 @@ matchaDb.removeInterests = (userid,interestsToDelete = []) => {
         }
     });
 }
-
 
 matchaDb.addInterests =  async (userid, interestsToAdd = []) => {
     return new Promise((resolve, reject) => {
@@ -285,14 +282,13 @@ matchaDb.getAllInterests = (userid) => {
 * Interests  Start Ends Here
 */
 
-
+// Handle notifications
 matchaDb.getOnlineUsers = () => {
     return new Promise((resolve, reject) => {
         poolConnection.query(
             "SELECT userid FROM users WHERE lastseen=?",
             'online',
             (err, results) => {
-                console.log(results);
                 if (err) {
                     return reject(err);
                 }
@@ -308,7 +304,6 @@ matchaDb.getRandomUsers = (gender) => {
             "SELECT * FROM users WHERE gender=? AND ( age BETWEEN 20 AND 50) LIMIT 15",
             [gender],
             (err, results) => {
-                // console.log(results);
                 if (err) {
                     return reject(err);
                 }
@@ -330,7 +325,6 @@ matchaDb.getUsers = (userid,gender,agemin,agemax) => {
             query,
             [userid,gender,agemin,agemax],
             (err, results) => {
-                // console.log(results);
                 if (err) {
                     return reject(err);
                 }
@@ -346,7 +340,6 @@ matchaDb.seen = (username) => {
             "UPDATE notifications SET seen = 1 WHERE receiver = ?",
             [username],
             (err, results) => {
-                console.log(results);
                 if (err) {
                     return reject(err);
                 }
@@ -363,7 +356,6 @@ matchaDb.getNotifications = (username) => {
             "SELECT * FROM notifications WHERE receiver = ? ORDER BY created_at DESC ",
             [username],
             (err, results) => {
-                console.log(results);
                 if (err) {
                     return reject(err);
                 }
@@ -379,7 +371,6 @@ matchaDb.getNewNotifications = (username) => {
             "SELECT COUNT(seen) FROM notifications WHERE (receiver = ? AND seen = 0)",
             [username],
             (err, results) => {
-                console.log(results);
                 if (err) {
                     return reject(err);
                 }
@@ -388,6 +379,68 @@ matchaDb.getNewNotifications = (username) => {
         );
     });
 };
+
+// Handle Like and Dislike
+
+matchaDb.updateLike = (like) => {
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            "UPDATE likes SET status = ? WHERE username = ?",
+            [status, username],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+}
+
+matchaDb.updateDislike = () => {
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            "UPDATE users SET status = ? WHERE username = ?",
+            [status, username],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+}
+
+matchaDb.getLike = () => {
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            "UPDATE users SET status = ? WHERE username = ?",
+            [status, username],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+}
+
+matchaDb.getDislike = () => {
+    return new Promise((resolve, reject) => {
+        poolConnection.query(
+            "UPDATE users SET status = ? WHERE username = ?",
+            [status, username],
+            (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+}
 
 
 module.exports = matchaDb;

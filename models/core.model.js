@@ -54,5 +54,31 @@ Core.getNotifications = async (username, result) =>{
   }
 }
 
+Core.addLikes = async (likeMessage, result) =>{
+  try{
+    let liked = await sql.insert('likes',likeMessage);
+    console.log(liked);
+    result(null, liked);
+  }catch (e) {
+    if(e.code ==='ER_DUP_ENTRY'){
+      let message = e.message.match(/(\x27).+(\x27) /gm);
+      result(message[0],null);
+    }
+  }
+}
+
+Core.getNotifications = async (username, result) =>{
+  try{
+    let notifications = await sql.getNotifications(username);
+    console.log(notifications);
+    result(null, notifications);
+  }catch (e) {
+    if(e.code ==='ER_DUP_ENTRY'){
+      let message = e.message.match(/(\x27).+(\x27) /gm);
+      result(message[0],null);
+    }
+  }
+}
+
 
 module.exports = Core;

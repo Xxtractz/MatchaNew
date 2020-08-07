@@ -77,9 +77,37 @@ exports.getNotifications = async  (req, res) => {
 }
 
 exports.like = async (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            User: "Content can not be empty."
+        });
+    }
+    if (req.body.type === "like"){
+        const likeMessage = {
+            sender: req.body.sender,
+            receiver: req.body.receiver,
+            liked: 1
+        }
+        await Core.addLikes(likeMessage, (err, res) => {
+            if (err) {
+                res.status(404).send({like: "Error adding like "});
+            }
+            res.status(200).send(data);
+        });
 
+    }else if(req.body.type === "dislike"){
+        const dislikeMessage = {
+            sender: req.body.sender,
+            receiver: req.body.receiver,
+            liked: 0
+        }
+        await Core.addLikes(dislikeMessage, (err, res) => {
+            if (err) {
+                res.status(404).send({like: "Error adding dislike "});
+            }
+            res.status(200).send(data);
+        });
+    //    un-match if matched
+    }
 }
 
-exports.dislike = async (req, res) => {
-
-}

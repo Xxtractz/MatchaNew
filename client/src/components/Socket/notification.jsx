@@ -73,7 +73,7 @@ class Notification extends Component {
                                             color="textPrimary"
                                         >{notify.message}
                                         </Typography>
-                                        <Button  aria-label="comments" href={this.filterUser(notify.sender)[0] ? "/user/view#"+JSON.parse(JSON.stringify(this.filterUser(notify.sender)[0])).userid:''}>
+                                        <Button variant="outlined" color="secondary" aria-label="comments" href={this.filterUser(notify.sender)[0] ? "/user/view#"+JSON.parse(JSON.stringify(this.filterUser(notify.sender)[0])).userid:''}>
                                             View Profile
                                         </Button>
                                     </React.Fragment>

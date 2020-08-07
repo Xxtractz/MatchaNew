@@ -103,7 +103,6 @@ class Profiles extends Component {
   };
 
   display(user) {
-    console.log(geolib.getDistance({latitude : getUserLatitude(), longitude: getUserLongitude()},{latitude: user.latitude, longitude : user.longitude},1));
     return (
       <div>
         <Card variant="outlined" style={{ height: "620px", width: "320px" }}>

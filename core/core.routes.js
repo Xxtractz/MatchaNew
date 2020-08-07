@@ -7,6 +7,6 @@ const Core = require("../controllers/core.controller");
     app.get("/notifications", Core.getNotifications);
 
     //getting chats for two users
-    app.post("/notify/get", Core.getNotifications);
+    app.post("/likes", Core.like);
 
     module.exports= app;
