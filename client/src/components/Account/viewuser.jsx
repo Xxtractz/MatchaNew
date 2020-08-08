@@ -1,35 +1,113 @@
 import React, {Component} from 'react';
-import {getActive} from "../../actions/user";
+import {getActive, getUserId, getUsername} from "../../actions/user";
 import Layout from "../Layout/layout";
-import {getUser} from "../../actions/api";
-import {Button, Paper} from "@material-ui/core";
+import {getMyLikes, getUser, likeAndDislike, notification, update} from "../../actions/api";
+import {Button, CardActions, Paper} from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import FavoriteTwoToneIcon from "@material-ui/icons/FavoriteTwoTone";
 import {red} from "@material-ui/core/colors";
 import IconButton from "@material-ui/core/IconButton";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 
 class ViewUser extends Component {
     constructor(props) {
         super(props);
 
         this.state={
-            cards:[]
+            cards:[],
+            id:'',
+            likes :[]
         };
     }
     
 componentDidMount() {
+        this.getLikesState();
+        this.setState({id : window.location.hash.substr(1)})
         getUser(window.location.hash.substr(1))
     .then((res)=>{
         this.setState({ cards : [res.data]});
     });
 }
+    getLikesState(){
+        getMyLikes(getUserId()).then((res)=>{
+            if(res) {
+                this.setState({ likes : [...res.data]});
+            }
+        });
+    }
+
+    like = (username,userid,popularity) => {
+        update(userid, {popularity : popularity + 3})
+            .then((response) => {
+                // console.log(response);
+            })
+            .catch((error) => {
+                // console.log(error);
+            });
+        notification({sender:getUsername(),receiver: username, message: " Likes you."}).then();
+        likeAndDislike({
+            type: "like",
+            sender: getUserId(),
+            receiver: userid,
+        }).then(
+            res => {
+                if (res.status === 200)
+                    this.getLikesState();
+            }
+        );
+    };
+
+    dislike = (username,userid) => {
+        notification({sender:getUsername(),receiver: username, message: " dislikes you."}).then();
+        likeAndDislike({
+            type: "dislike",
+            sender: getUserId(),
+            receiver: userid,
+        }).then( res => {if (res.status === 200)
+            this.getLikesState();});
+    };
 
 showImage(image,width,height){
         return (<Avatar alt="Remy Sharp" src={image ? image:''} style={{width:width, height:height}} className={'m-2'}/>)
 }
+
+likeButton(username,id,popularity){
+    return (
+        <IconButton
+            aria-label="Like"
+            onClick={(e) => {
+                this.like(username,id, popularity);
+            }}
+        >
+            <FavoriteTwoToneIcon fontSize="large" style={{ color: red[500] }} /> <small> Like</small>
+        </IconButton>
+    )
+}
+
+unLikeButton(username,id){
+    return(
+        <IconButton
+            aria-label="dislike"
+            onClick={() => {
+                this.dislike(username,id);
+            }}
+        >
+            <ThumbDownIcon className={'m-1'} fontSize="large" style={{ color: red[500] }} /> <small> dislike</small>
+        </IconButton>
+    )
+}
+
+showMatched(){
+    return(
+        <Paper className={'m-3 p-1 '} elevation={0} square  >
+            <strong className="text-black-50">Matched</strong>
+        </Paper>
+    )
+}
     displayUser(user){
+    const {id,likes} = this.state;
         return(
             <Paper className="container p-2 mt-4 " variant="outlined">
                 {this.showImage(user.profileImage,"250px","250px")}
@@ -54,16 +132,20 @@ showImage(image,width,height){
                         </Paper>
                     </Grid>
                     <Grid item xs>
-                        <IconButton
-                            aria-label="Like"
-                            // onClick={() => {
-                            //     this.like(user.username,user.userid, user.popularity);
-                            // }}
-                        >
-                            <FavoriteTwoToneIcon fontSize="large" style={{ color: red[500] }} /> <small>Like</small>
-                        </IconButton>
+                        {
+                            likes.includes(parseInt(id))
+                                ? this.unLikeButton(user.username,id)
+                                : this.likeButton(user.username,id, user.popularity)
+                        }
+
                     </Grid>
                     <Grid item xs>
+                        {
+                            likes.includes(parseInt(id))
+                                ? this.showMatched()
+                                :""
+                        }
+
                     </Grid>
                 </Grid>
 

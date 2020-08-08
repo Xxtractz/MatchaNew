@@ -5,6 +5,7 @@ import { Alert } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import Collapse from "@material-ui/core/Collapse";
 import CloseIcon from "@material-ui/icons/Close";
+import {NAV} from "../../models/nav";
 
 class Login extends Component {
   constructor() {
@@ -230,16 +231,16 @@ class Login extends Component {
                     variant="outlined"
                     color="primary"
                     size="small"
-                    href="/register"
+                    href={NAV.REGISTER}
                   >
                     Register
                   </Button>
                 </CardActions>
                 <CardActions className="bg-gray">
-                  <ButtonBase variant="text" size="small" href="/forgot">
+                  <ButtonBase variant="text" size="small" href={NAV.FORGOT}>
                     forgot password?
                   </ButtonBase>
-                  <ButtonBase variant="text" size="small" href="/verify">
+                  <ButtonBase variant="text" size="small" href={NAV.VERIFY}>
                   verify account?
                 </ButtonBase>
                 </CardActions>

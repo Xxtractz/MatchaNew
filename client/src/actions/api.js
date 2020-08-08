@@ -12,6 +12,10 @@ function handleStoreUser(user) {
   sessionStorage.setItem("user", user);
 }
 
+function handleStoreLikeUser(likedUsers){
+  sessionStorage.setItem("LikedUsers",likedUsers);
+}
+
 function hardLogout() {
   sessionStorage.clear();
   localStorage.clear();
@@ -185,6 +189,7 @@ export const getMyLikes = (id) => {
   return axios
       .get(_Url.like + "/" + id)
       .then((response) => {
+        handleStoreLikeUser(response.data);
         if (response) {
           return response;
         }

@@ -20,6 +20,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import sortByDistance from 'sort-by-distance';
 import Slider from "@material-ui/core/Slider";
+import {parse} from "dotenv";
 
 class Profiles extends Component {
   constructor(props) {
@@ -109,8 +110,13 @@ class Profiles extends Component {
       this.remove();
   };
 
-  dislike = (username) => {
+  dislike = (username,userid) => {
     notification({sender:getUsername(),receiver: username, message: " dislikes you."}).then();
+    likeAndDislike({
+      type: "dislike",
+      sender: getUserId(),
+      receiver: parseInt(userid),
+    }).then();
     this.remove();
   };
 
@@ -147,7 +153,7 @@ class Profiles extends Component {
             <IconButton
               aria-label="dislike"
               onClick={() => {
-                this.dislike(user.username);
+                this.dislike(user.username,user.userid);
               }}
             >
               <ThumbDownIcon  fontSize="large" style={{ color: red[600] }} />

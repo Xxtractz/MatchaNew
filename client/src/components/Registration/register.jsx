@@ -19,6 +19,7 @@ import {
   isEqual,
   isPassword,
 } from "../../utils/validate";
+import {NAV} from "../../models/nav";
 
 class Register extends Component {
   constructor(props) {
@@ -448,7 +449,7 @@ class Register extends Component {
 
                 <hr />
                 <CardActions className="bg-gray">
-                  <ButtonBase variant="text" size="small" href="/login">
+                  <ButtonBase variant="text" size="small" href={NAV.LOGIN}>
                     Already a have an account?
                   </ButtonBase>
                 </CardActions>

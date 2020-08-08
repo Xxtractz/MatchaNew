@@ -397,11 +397,11 @@ matchaDb.like = (like) => {
     });
 }
 
-matchaDb.disLike = (user_sender) =>{
+matchaDb.disLike = (user_sender, user_receiver) =>{
     return new Promise((resolve, reject) => {
         poolConnection.query(
-            "DELETE '*' FROM likes WHERE sender = ?",
-            [user_sender],
+            "DELETE  FROM likes WHERE sender = ? AND receiver = ?",
+            [user_sender,user_receiver],
             (err, results) => {
                 if (err) {
                     return reject(err);

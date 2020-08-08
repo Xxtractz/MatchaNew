@@ -100,7 +100,7 @@ exports.like = async (req, res) => {
             sender: req.body.sender,
             receiver: req.body.receiver,
         }
-        await Core.addLikes(dislikeMessage, (err, data) => {
+        await Core.removeLikes(dislikeMessage, (err, data) => {
             if (err) {
                 res.status(404).send({like: "Error adding dislike "});
             }

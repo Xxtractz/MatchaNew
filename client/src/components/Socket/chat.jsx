@@ -25,9 +25,6 @@ class ChatContainer extends Component {
   }
 
   render() {
-    const {socket} = this.props;
-
-    console.log(socket);
     return (
       <div>
         {getActive() === 1 ? (

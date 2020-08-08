@@ -73,6 +73,19 @@ Core.addLikes = async (likeMessage, result) =>{
   }
 }
 
+Core.removeLikes = async (likeMessage, result) =>{
+  try{
+    let disliked = await sql.disLike(likeMessage.sender,likeMessage.receiver);
+    console.log(disliked);
+    result(null, disliked);
+  }catch (e) {
+    if(e.code ==='ER_DUP_ENTRY'){
+      let message = e.message.match(/(\x27).+(\x27) /gm);
+      result(message[0],null);
+    }
+  }
+}
+
 Core.getNotifications = async (username, result) =>{
   try{
     let notifications = await sql.getNotifications(username);

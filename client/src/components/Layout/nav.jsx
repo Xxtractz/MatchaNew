@@ -19,6 +19,7 @@ import {
   ListItemText,
   Divider,
 } from "@material-ui/core";
+import { NAV } from '../../models/nav';
 
 class Nav extends Component {
   constructor() {
@@ -69,7 +70,7 @@ class Nav extends Component {
 
   messageMenu() {
     return (
-      <a className="text-decoration-none text-white" href="/sockets#chat">
+      <a className="text-decoration-none text-white" href={NAV.CHAT}>
         <ListItem button className="text-center ">
           <ListItemText>Message</ListItemText>
         </ListItem>
@@ -79,7 +80,7 @@ class Nav extends Component {
 
   accountMenu() {
     return (
-      <a className="text-decoration-none text-white" href="/user">
+      <a className="text-decoration-none text-white" href={NAV.ACCOUNT}>
         <ListItem button className="text-center ">
           <ListItemText>Account</ListItemText>
         </ListItem>
@@ -89,7 +90,7 @@ class Nav extends Component {
 
   notificationMenu() {
     return (
-        <a className="text-decoration-none text-white mx-auto" href="/sockets#notifications">
+        <a className="text-decoration-none text-white mx-auto" href={NAV.NOTIFICATIONS}>
 
           <ListItem button className="text-center ">
 
