@@ -59,26 +59,28 @@ CREATE TABLE IF NOT EXISTS \`interests\` (
   CONSTRAINT \`interests_ibfk_1\` FOREIGN KEY (\`userid\`) REFERENCES \`users\` (\`userid\`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS \`notifications\` (
-  \`notifyid\` int unsigned NOT NULL AUTO_INCREMENT,
-  \`receiverUsername\` varchar(255) DEFAULT NULL,
-  \`senderUsername\` varchar(255) DEFAULT NULL,
-  \`receiverEmail\` varchar(255) DEFAULT NULL,
-  \`message\` varchar(500) DEFAULT NULL,
-  \`seen\` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (\`notifyid\`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS \`notifications\`
+(
+    \`notifyid\`   int unsigned NOT NULL AUTO_INCREMENT,
+    \`receiver\`   varchar(255)      DEFAULT NULL,
+    \`sender\`     varchar(255)      DEFAULT NULL,
+    \`message\`    varchar(500)      DEFAULT NULL,
+    \`seen\`       tinyint(1)        DEFAULT '0',
+    \`created_at\` timestamp    NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (\`notifyid\`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 581
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS \`likes\` (
-  \`likeid\` int unsigned NOT NULL AUTO_INCREMENT,
-  \`userid\` int NOT NULL,
-  \`senderuserid\` int DEFAULT NULL,
-  \`recieveruserid\` int DEFAULT NULL,
-  \`notify\` int DEFAULT NULL,
-  PRIMARY KEY (\`likeid\`),
-  KEY \`userid\` (\`userid\`),
-  CONSTRAINT \`likes_ibfk_1\` FOREIGN KEY (\`userid\`) REFERENCES \`users\` (\`userid\`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS \`likes\`
+(
+    \`likeid\`   int unsigned NOT NULL AUTO_INCREMENT,
+    \`sender\`   int          NOT NULL,
+    \`receiver\` int          NOT NULL,
+    PRIMARY KEY (\`likeid\`),
+    UNIQUE KEY \`likes_receiver_uindex\` (\`receiver\`)
+) ENGINE = InnoDB AUTO_INCREMENT = 84 DEFAULT CHARSET = utf8;
 
 CREATE TABLE \`blocked\`
 (
