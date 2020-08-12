@@ -20,7 +20,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import sortByDistance from 'sort-by-distance';
 import Slider from "@material-ui/core/Slider";
-import {parse} from "dotenv";
 
 class Profiles extends Component {
   constructor(props) {
@@ -42,7 +41,6 @@ class Profiles extends Component {
     this.getInterestsState();
   }
 
-  //Set State On Mount
   getInterestsState(){
     getInterests(getUserId()).then((res)=>{
       if (res) {
@@ -125,7 +123,6 @@ class Profiles extends Component {
   };
 
   display(user) {
-    console.log(this.state.cards);
     return (
       <div>
         <Card variant="outlined" style={{ height: "620px", width: "320px" }}>

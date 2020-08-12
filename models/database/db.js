@@ -9,6 +9,7 @@ const poolConnection = mysql.createPool({
   password: dbConfig.PASSWORD,
   database: dbConfig.DB,
   port: 3306,
+    multipleStatements: true
 });
 
 let matchaDb = {};
@@ -412,16 +413,18 @@ matchaDb.disLike = (user_sender, user_receiver) =>{
     });
 }
 
-matchaDb.getMatch = (userSender,UserReceiver) =>{
+matchaDb.getLikeBack = (userSender, UserReceiver) =>{
+    console.log(userSender,UserReceiver)
     const query = `
             SELECT sender, receiver 
             FROM likes 
-            WHERE reciever LIKE ?
-            AND sender LIKE ?`;
+            WHERE receiver LIKE ${userSender} AND sender LIKE ${UserReceiver}` ;
     return new Promise((resolve, reject) => {
         poolConnection.query(query,
-            [userSender,UserReceiver],
+            '',
             (err, results) => {
+                console.log("Matched results => ",results);
+                console.log(err)
                 if (err) {
                     return reject(err);
                 }
@@ -431,6 +434,44 @@ matchaDb.getMatch = (userSender,UserReceiver) =>{
     });
 }
 
+
+
+matchaDb.removeMatched =  (userSender,UserReceiver) =>{
+    console.log(userSender,UserReceiver)
+    const query = `DELETE FROM matched WHERE (user_1 = ? AND user_2 = ? )OR  (user_2 = ? AND user_1 = ?)` ;
+    return new Promise((resolve, reject) => {
+        poolConnection.query(query,
+            [userSender,UserReceiver,userSender,UserReceiver],
+            (err, results) => {
+                console.log("Matched results => ",results);
+                console.log(err)
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+}
+
+
+matchaDb.addMatched =  (userSender,UserReceiver) =>{
+    console.log(userSender,UserReceiver)
+    const query = `INSERT INTO matched SET user_1 = ?, user_2 = ?` ;
+    return new Promise((resolve, reject) => {
+        poolConnection.query(query,
+            [userSender,UserReceiver],
+            (err, results) => {
+                console.log("Matched results => ",results);
+                console.log(err)
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results[0]);
+            }
+        );
+    });
+}
 matchaDb.getMyLikes = (user_sender) =>{
     const query = `
             SELECT receiver
@@ -447,6 +488,25 @@ matchaDb.getMyLikes = (user_sender) =>{
                 return resolve(results.map(result => {
                     return result.receiver
                 }));
+            }
+        );
+    });
+}
+
+matchaDb.getMyMatches = (user_sender) =>{
+    const query = `
+            SELECT user_1,user_2
+            FROM matched 
+            WHERE user_1 = ? OR user_2 = ?`;
+    return new Promise((resolve, reject) => {
+        poolConnection.query(query,
+            [user_sender,user_sender],
+            (err, results) => {
+                console.log(results)
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results);
             }
         );
     });

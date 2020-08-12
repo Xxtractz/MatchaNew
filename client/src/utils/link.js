@@ -27,6 +27,8 @@ export const notificationUrl = ServerUrl + "/notifications";
 
 //Likes
 export const like = ServerUrl + "/likes";
+export const likeBack = ServerUrl + "/likes/back";
+export const match = ServerUrl + "/matched";
 
 // Installation
 export const installUrl = ServerUrl + "/installation";

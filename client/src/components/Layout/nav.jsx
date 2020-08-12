@@ -95,7 +95,7 @@ class Nav extends Component {
           <ListItem button className="text-center ">
 
               <ListItemText>
-                <Badge className="text-center " badgeContent={0} color="secondary">
+                <Badge className="text-center " label="Show badge" color="secondary">
                   Notifications
                 </Badge>
               </ListItemText>

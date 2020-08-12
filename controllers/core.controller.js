@@ -128,3 +128,39 @@ exports.getMyLike = async (req, res) => {
     }
 }
 
+exports.getLikeBack = async (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            User: "Content can not be empty."
+        });
+    }
+    console.log(req.body);
+    await Core.getLikedBack(req.body.sender,req.body.receiver, (err, data) => {
+        console.log("get likeBack Response  ======>",err)
+        console.log("get likeBack Response  ======>",data)
+        if (err) {
+            res.status(404).send({like: "Error adding like "});
+        }
+        res.status(200).send(data);
+    });
+}
+
+exports.getMatches = async (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            User: "Content can not be empty."
+        });
+    }
+    console.log(req.params.id)
+    if (req.params.id){
+        await Core.getMyMatches(req.params.id, (err, data) => {
+            console.log("get my Matches Response  ======>",err)
+            console.log("get My Matches Response  ======>",data)
+            if (err) {
+                res.status(404).send({like: "Error adding like "});
+            }
+            res.status(200).send(data);
+        });
+
+    }
+}

@@ -203,6 +203,49 @@ export const getMyLikes = (id) => {
       });
 };
 
+export const getMyMatches = (id) => {
+  return axios
+      .get(_Url.match + "/" + id)
+      .then((response) => {
+        handleStoreLikeUser(response.data);
+        if (response) {
+          return response;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          return error.response;
+        } else {
+          return "Timeout";
+        }
+      });
+};
+
+export const getLikeBack = (id_sender,id_receiver) => {
+  return axios
+      .post(_Url.likeBack,{sender:id_sender,receiver:id_receiver})
+      .then((response) => {
+        handleStoreLikeUser(response.data);
+        if (response) {
+          return response;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          return error.response;
+        } else {
+          return "Timeout";
+        }
+      });
+};
+
+export const getMatchedusers = async (id) => {
+    return axios.get(`${_Url.usersUrl}/${id}`).then((response) => {
+        return response;
+    });
+};
+
+
 
 // Notifications
 export const notification = async (body) => {

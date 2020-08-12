@@ -9,6 +9,8 @@ import {
 import "./App.scss";
 
 import { NAV } from "../src/models/nav";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 
 // Pages
 import Home from "./components/Home/index";
@@ -31,6 +33,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <ReactNotification />
         <Router>
           <Switch>
             <PrivateRoute exact path="/" component={Home} />

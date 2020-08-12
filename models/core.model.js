@@ -4,16 +4,26 @@ const sql = require("./database/db.js");
 const Core = function (notify) {
 };
 
-Core.visit = () =>{
-  try{}catch (e) {
-  }
-}
-
 Core.getMyLike = async (id,result)=>{
   try{
     const myLikes = await sql.getMyLikes(id);
     console.log("Mylikes -====>",myLikes)
       result(null, myLikes);
+
+  }catch (e) {
+    if(e.code ==='ER_DUP_ENTRY'){
+      let message = e.message.match(/(\x27).+(\x27) /gm);
+      result(message[0],null);
+    }
+  }
+}
+
+Core.getMyMatches = async (id,result)=>{
+  try{
+    console.log(id);
+    const myMatches = await sql.getMyMatches(id);
+    console.log("MyMatches -====>",myMatches)
+    result(null, myMatches);
 
   }catch (e) {
     if(e.code ==='ER_DUP_ENTRY'){
@@ -60,6 +70,30 @@ Core.getNotifications = async (username, result) =>{
   }
 }
 
+Core.getLikedBack = async (sender, receiver, result) =>{
+  try{
+    console.log("sender ==>"+sender,"reciever ==>"+receiver);
+    let matched = await sql.getLikeBack(sender,receiver);
+    console.log(matched);
+    if (matched != []){
+      try {
+        await sql.addMatched(sender,receiver);
+      }catch (e){
+        result(null, matched);
+      }
+      result(null, matched);
+    }else{
+      result(null, matched);
+    }
+
+  }catch (e) {
+    if(e.code ==='ER_DUP_ENTRY'){
+      let message = e.message.match(/(\x27).+(\x27) /gm);
+      result(message[0],null);
+    }
+  }
+}
+
 Core.addLikes = async (likeMessage, result) =>{
   try{
     let liked = await sql.like(likeMessage);
@@ -76,7 +110,8 @@ Core.addLikes = async (likeMessage, result) =>{
 Core.removeLikes = async (likeMessage, result) =>{
   try{
     let disliked = await sql.disLike(likeMessage.sender,likeMessage.receiver);
-    console.log(disliked);
+    console.log("dislike +++++++=====>",disliked);
+    await sql.removeMatched(likeMessage.sender,likeMessage.receiver);
     result(null, disliked);
   }catch (e) {
     if(e.code ==='ER_DUP_ENTRY'){
@@ -85,19 +120,5 @@ Core.removeLikes = async (likeMessage, result) =>{
     }
   }
 }
-
-Core.getNotifications = async (username, result) =>{
-  try{
-    let notifications = await sql.getNotifications(username);
-    console.log(notifications);
-    result(null, notifications);
-  }catch (e) {
-    if(e.code ==='ER_DUP_ENTRY'){
-      let message = e.message.match(/(\x27).+(\x27) /gm);
-      result(message[0],null);
-    }
-  }
-}
-
 
 module.exports = Core;

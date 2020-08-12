@@ -8,6 +8,9 @@ const Core = require("../controllers/core.controller");
 
     //getting chats for two users
     app.post("/likes", Core.like);
+    app.post("/likes/back", Core.getLikeBack);
     app.get("/likes/:id", Core.getMyLike);
+
+    app.get("/matched/:id", Core.getMatches);
 
     module.exports= app;

@@ -4,8 +4,11 @@ const app = express();
 
 //Configs
 const path = require("path");
-const port = process.env.PORT || 4000;
-const server = app.listen(port,() => console.log(`Server Running on Port => ${port}`));
+const PORT = process.env.PORT || 4000;
+const server = require("http").Server(app);
+// const server = app.listen(port,() => console.log(`Server Running on Port => ${port}`));
+// const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log(`Listen on *: ${PORT}`));
 
 //Util
 const jwt = require("jsonwebtoken");
@@ -19,9 +22,16 @@ const userRoutes = require('./core/user.routes');
 const notifyRoutes = require('./core/core.routes');
 
 //SocketIO
-let io = module.exports.io = require('socket.io')(server);
+const io = require('socket.io')(server);
 // const SocketManager = require('./core/SocketManager');
-
+io.on("connection", socket => {
+    const { id } = socket.client;
+    console.log(`User Connected: ${id}`);
+    socket.on("chat message", ({ nickname,receiver, msg }) => {
+        console.log(nickname,receiver,msg);
+        io.emit("chat message", { nickname,receiver, msg });
+    });
+});
 //Connect to Socket
 // io.sockets.on("connection", SocketManager);
 
