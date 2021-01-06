@@ -10,7 +10,7 @@
     "@progress/kendo-react-buttons": "^3.15.0",
     "@progress/kendo-react-conversational-ui": "^3.15.0",
     "@progress/kendo-react-intl": "^3.15.0",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.3.1",
     "bootstrap-css-only": "^4.3.1",
