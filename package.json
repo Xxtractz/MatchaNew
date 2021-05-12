@@ -29,7 +29,7 @@
         "morgan": "~1.9.1",
         "mysql": "^2.18.1",
         "node-pre-gyp": "^0.15.0",
-        "nodemailer": "^6.4.2",
+        "nodemailer": "^6.4.16",
         "nodemon": "^1.19.4",
         "react-bootstrap-sidebar": "0.0.1",
         "socket.io": "^2.3.0",
