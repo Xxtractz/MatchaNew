@@ -20,7 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "material-ui-chip-input": "^2.0.0-beta.2",
     "mdbreact": "^4.24.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "react": "^16.11.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-chat-elements": "^10.9.3",
